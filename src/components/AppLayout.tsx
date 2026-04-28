@@ -3,6 +3,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { LayoutDashboard, MessageSquarePlus, Trophy, Users, CalendarDays, LogOut, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { AdminNotifications } from "@/components/AdminNotifications";
 
 export const AppLayout = ({ children }: { children: React.ReactNode }) => {
   const { user, role, signOut } = useAuth();
