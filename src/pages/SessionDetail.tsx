@@ -215,10 +215,39 @@ const SessionDetail = () => {
             </Button>
           </div>
         </Card>
+      ) : editing && myFb ? (
+        <Card className="card-elevate p-6">
+          <h3 className="font-serif text-2xl mb-4">Edit your feedback</h3>
+          <div className="space-y-4">
+            <div className="flex gap-1">
+              {[1, 2, 3, 4, 5].map((n) => (
+                <button key={n} onClick={() => setEditRating(n)} className="p-1">
+                  <Star className={`w-7 h-7 transition ${n <= editRating ? "fill-primary text-primary" : "text-muted-foreground"}`} />
+                </button>
+              ))}
+            </div>
+            <Textarea value={editComment} onChange={(e) => setEditComment(e.target.value)} maxLength={1000} rows={4} />
+            <div className="flex gap-2">
+              <Button onClick={saveEdit} className="bg-gradient-gold text-primary-foreground">Save</Button>
+              <Button variant="outline" onClick={() => setEditing(false)}>Cancel</Button>
+            </div>
+          </div>
+        </Card>
       ) : (
         <Card className="card-elevate p-6 border-success/30">
-          <div className="mono text-[10px] uppercase tracking-widest text-success mb-2">✓ You submitted feedback</div>
-          <p className="text-sm text-muted-foreground">{myFb.rating}★ — "{myFb.comment ?? "(no comment)"}"</p>
+          <div className="flex items-start justify-between gap-3 flex-wrap">
+            <div className="flex-1 min-w-[200px]">
+              <div className="mono text-[10px] uppercase tracking-widest text-success mb-2">✓ You submitted feedback</div>
+              <p className="text-sm text-muted-foreground">{myFb.rating}★ — "{myFb.comment ?? "(no comment)"}"</p>
+              {!canEdit(myFb) && <p className="text-[11px] mono text-muted-foreground mt-2">Edit window (24h) expired</p>}
+            </div>
+            {canEdit(myFb) && (
+              <div className="flex gap-2">
+                <Button size="sm" variant="outline" onClick={startEdit}>Edit</Button>
+                <Button size="sm" variant="ghost" onClick={deleteOwn} className="text-destructive">Delete</Button>
+              </div>
+            )}
+          </div>
         </Card>
       )}
 
