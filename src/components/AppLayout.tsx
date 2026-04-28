@@ -42,6 +42,7 @@ export const AppLayout = ({ children }: { children: React.ReactNode }) => {
           </nav>
           <div className="flex items-center gap-2">
             {role === "admin" && <span className="hidden sm:inline mono text-[10px] uppercase tracking-widest px-2 py-1 rounded bg-primary/10 text-primary border border-primary/20">Admin</span>}
+            {role === "admin" && <AdminNotifications />}
             <Button variant="ghost" size="sm" onClick={async () => { await signOut(); navigate("/auth"); }}>
               <LogOut className="w-4 h-4" />
             </Button>
