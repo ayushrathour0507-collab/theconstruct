@@ -38,6 +38,18 @@ const Leaderboard = () => {
   const stats = useMemo(() => computeMonthlyEvaluation(fb), [fb]);
   const trainerName = (id: string) => trainers.find((t) => t.id === id)?.name ?? "—";
 
+  // Per-month winner history for the year
+  const winnerHistory = useMemo(() => {
+    return Array.from({ length: 12 }, (_, i) => i + 1).map((m) => {
+      const ms = sessions.filter((s) => s.year === year && s.month === m);
+      const mfb = feedback.filter((f) => ms.some((s) => s.id === f.session_id));
+      if (mfb.length === 0) return null;
+      const top = computeMonthlyEvaluation(mfb)[0];
+      if (!top) return null;
+      return { month: m, winner: top };
+    }).filter(Boolean) as { month: number; winner: ReturnType<typeof computeMonthlyEvaluation>[number] }[];
+  }, [sessions, feedback, year]);
+
   const exportCsv = () => {
     const rows = [["Rank","Trainer","Avg Rating","Total Feedbacks","Valid Feedbacks","High Quality %","Final Score"]];
     stats.forEach((s) => rows.push([
