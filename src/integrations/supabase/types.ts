@@ -14,16 +14,220 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      feedback: {
+        Row: {
+          anonymous: boolean
+          comment: string | null
+          created_at: string
+          id: string
+          keywords: string[] | null
+          quality_category: string | null
+          quality_score: number | null
+          rating: number
+          sentiment: string | null
+          session_id: string
+          trainer_id: string
+          user_id: string
+        }
+        Insert: {
+          anonymous?: boolean
+          comment?: string | null
+          created_at?: string
+          id?: string
+          keywords?: string[] | null
+          quality_category?: string | null
+          quality_score?: number | null
+          rating: number
+          sentiment?: string | null
+          session_id: string
+          trainer_id: string
+          user_id: string
+        }
+        Update: {
+          anonymous?: boolean
+          comment?: string | null
+          created_at?: string
+          id?: string
+          keywords?: string[] | null
+          quality_category?: string | null
+          quality_score?: number | null
+          rating?: number
+          sentiment?: string | null
+          session_id?: string
+          trainer_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "feedback_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "feedback_trainer_id_fkey"
+            columns: ["trainer_id"]
+            isOneToOne: false
+            referencedRelation: "trainers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id: string
+          name: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      session_summary: {
+        Row: {
+          key_points: string[] | null
+          sentiment: string | null
+          session_id: string
+          summary: string | null
+          updated_at: string
+        }
+        Insert: {
+          key_points?: string[] | null
+          sentiment?: string | null
+          session_id: string
+          summary?: string | null
+          updated_at?: string
+        }
+        Update: {
+          key_points?: string[] | null
+          sentiment?: string | null
+          session_id?: string
+          summary?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "session_summary_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: true
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sessions: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          month: number
+          session_date: string
+          status: string
+          title: string
+          trainer_id: string
+          year: number
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          month: number
+          session_date: string
+          status?: string
+          title: string
+          trainer_id: string
+          year: number
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          month?: number
+          session_date?: string
+          status?: string
+          title?: string
+          trainer_id?: string
+          year?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sessions_trainer_id_fkey"
+            columns: ["trainer_id"]
+            isOneToOne: false
+            referencedRelation: "trainers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      trainers: {
+        Row: {
+          active: boolean
+          created_at: string
+          id: string
+          name: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          id?: string
+          name: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +354,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+    },
   },
 } as const
