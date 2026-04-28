@@ -7,7 +7,7 @@ import { Trophy, MessageSquare, CalendarCheck2, Sparkles, TrendingUp } from "luc
 import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis, PieChart, Pie, Cell } from "recharts";
 import { Link } from "react-router-dom";
 
-interface Trainer { id: string; name: string; }
+interface Trainer { id: string; name: string; active: boolean; }
 interface Session { id: string; title: string; session_date: string; month: number; year: number; trainer_id: string; status: string; }
 interface Feedback { id: string; trainer_id: string; session_id: string; rating: number; quality_category: string | null; sentiment: string | null; created_at: string; }
 
