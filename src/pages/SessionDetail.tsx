@@ -33,6 +33,9 @@ const SessionDetail = () => {
   const [anon, setAnon] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [aiBusy, setAiBusy] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const [editRating, setEditRating] = useState(5);
+  const [editComment, setEditComment] = useState("");
 
   const load = async () => {
     if (!id) return;
