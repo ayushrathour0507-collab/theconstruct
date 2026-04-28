@@ -157,6 +157,32 @@ const Leaderboard = () => {
           )}
         </>
       )}
+
+      {/* Hall of Champions — past month winners */}
+      {winnerHistory.length > 0 && (
+        <div className="space-y-4 pt-4">
+          <div>
+            <div className="mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground mb-2">Hall of Champions</div>
+            <h2 className="font-serif text-3xl">2026 monthly winners</h2>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {winnerHistory.map(({ month: m, winner: w }) => (
+              <Card key={m} className="card-elevate p-5 flex items-center gap-4">
+                <div className="w-12 h-12 rounded-xl bg-gradient-gold flex items-center justify-center shadow-glow shrink-0">
+                  <Trophy className="w-6 h-6 text-primary-foreground" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="mono text-[10px] uppercase tracking-widest text-primary mb-0.5">{monthLabel(m)} 2026</div>
+                  <div className="font-serif text-lg truncate">{trainerName(w.trainer_id)}</div>
+                  <div className="text-xs text-muted-foreground mono">
+                    {w.final_score.toFixed(2)} · {w.avg_rating.toFixed(2)}★ · {w.total_feedbacks} fb
+                  </div>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
