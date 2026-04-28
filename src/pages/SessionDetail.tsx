@@ -112,6 +112,51 @@ const SessionDetail = () => {
     } finally { setAiBusy(false); }
   };
 
+  // Auto-summarize: admin only, when ≥3 useful feedbacks exist and no summary yet
+  useEffect(() => {
+    if (role !== "admin" || summary?.summary || aiBusy || !id) return;
+    const useful = feedback.filter((f) => f.comment && f.quality_category !== "spam");
+    if (useful.length >= 3) {
+      generateSummary();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [feedback.length, role, summary?.summary, id]);
+
+  const HOURS_24 = 24 * 60 * 60 * 1000;
+  const canEdit = (f: Feedback) => Date.now() - new Date(f.created_at).getTime() < HOURS_24;
+
+  const startEdit = () => {
+    if (!myFb) return;
+    setEditRating(myFb.rating);
+    setEditComment(myFb.comment ?? "");
+    setEditing(true);
+  };
+
+  const saveEdit = async () => {
+    if (!myFb) return;
+    const parsed = commentSchema.safeParse(editComment);
+    if (!parsed.success) { toast.error("Comment too long"); return; }
+    const { data: ai } = await supabase.functions.invoke("analyze-feedback", { body: { comment: editComment, rating: editRating } });
+    const enrich = ai && !ai.error ? ai : { quality_score: null, quality_category: null, sentiment: null, keywords: null };
+    const { error } = await supabase.from("feedback").update({
+      rating: editRating, comment: editComment.trim() || null,
+      quality_score: enrich.quality_score, quality_category: enrich.quality_category,
+      sentiment: enrich.sentiment, keywords: enrich.keywords,
+    }).eq("id", myFb.id);
+    if (error) { toast.error(error.message); return; }
+    toast.success("Feedback updated");
+    setEditing(false);
+    load();
+  };
+
+  const deleteOwn = async () => {
+    if (!myFb || !confirm("Delete your feedback?")) return;
+    const { error } = await supabase.from("feedback").delete().eq("id", myFb.id);
+    if (error) { toast.error(error.message); return; }
+    toast.success("Deleted");
+    load();
+  };
+
   if (!session) return <div className="text-muted-foreground mono text-xs">LOADING…</div>;
 
   const validFb = feedback.filter((f) => f.quality_category !== "spam");
