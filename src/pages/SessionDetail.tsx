@@ -33,6 +33,9 @@ const SessionDetail = () => {
   const [anon, setAnon] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [aiBusy, setAiBusy] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const [editRating, setEditRating] = useState(5);
+  const [editComment, setEditComment] = useState("");
 
   const load = async () => {
     if (!id) return;
@@ -109,6 +112,51 @@ const SessionDetail = () => {
     } finally { setAiBusy(false); }
   };
 
+  // Auto-summarize: admin only, when ≥3 useful feedbacks exist and no summary yet
+  useEffect(() => {
+    if (role !== "admin" || summary?.summary || aiBusy || !id) return;
+    const useful = feedback.filter((f) => f.comment && f.quality_category !== "spam");
+    if (useful.length >= 3) {
+      generateSummary();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [feedback.length, role, summary?.summary, id]);
+
+  const HOURS_24 = 24 * 60 * 60 * 1000;
+  const canEdit = (f: Feedback) => Date.now() - new Date(f.created_at).getTime() < HOURS_24;
+
+  const startEdit = () => {
+    if (!myFb) return;
+    setEditRating(myFb.rating);
+    setEditComment(myFb.comment ?? "");
+    setEditing(true);
+  };
+
+  const saveEdit = async () => {
+    if (!myFb) return;
+    const parsed = commentSchema.safeParse(editComment);
+    if (!parsed.success) { toast.error("Comment too long"); return; }
+    const { data: ai } = await supabase.functions.invoke("analyze-feedback", { body: { comment: editComment, rating: editRating } });
+    const enrich = ai && !ai.error ? ai : { quality_score: null, quality_category: null, sentiment: null, keywords: null };
+    const { error } = await supabase.from("feedback").update({
+      rating: editRating, comment: editComment.trim() || null,
+      quality_score: enrich.quality_score, quality_category: enrich.quality_category,
+      sentiment: enrich.sentiment, keywords: enrich.keywords,
+    }).eq("id", myFb.id);
+    if (error) { toast.error(error.message); return; }
+    toast.success("Feedback updated");
+    setEditing(false);
+    load();
+  };
+
+  const deleteOwn = async () => {
+    if (!myFb || !confirm("Delete your feedback?")) return;
+    const { error } = await supabase.from("feedback").delete().eq("id", myFb.id);
+    if (error) { toast.error(error.message); return; }
+    toast.success("Deleted");
+    load();
+  };
+
   if (!session) return <div className="text-muted-foreground mono text-xs">LOADING…</div>;
 
   const validFb = feedback.filter((f) => f.quality_category !== "spam");
@@ -167,10 +215,39 @@ const SessionDetail = () => {
             </Button>
           </div>
         </Card>
+      ) : editing && myFb ? (
+        <Card className="card-elevate p-6">
+          <h3 className="font-serif text-2xl mb-4">Edit your feedback</h3>
+          <div className="space-y-4">
+            <div className="flex gap-1">
+              {[1, 2, 3, 4, 5].map((n) => (
+                <button key={n} onClick={() => setEditRating(n)} className="p-1">
+                  <Star className={`w-7 h-7 transition ${n <= editRating ? "fill-primary text-primary" : "text-muted-foreground"}`} />
+                </button>
+              ))}
+            </div>
+            <Textarea value={editComment} onChange={(e) => setEditComment(e.target.value)} maxLength={1000} rows={4} />
+            <div className="flex gap-2">
+              <Button onClick={saveEdit} className="bg-gradient-gold text-primary-foreground">Save</Button>
+              <Button variant="outline" onClick={() => setEditing(false)}>Cancel</Button>
+            </div>
+          </div>
+        </Card>
       ) : (
         <Card className="card-elevate p-6 border-success/30">
-          <div className="mono text-[10px] uppercase tracking-widest text-success mb-2">✓ You submitted feedback</div>
-          <p className="text-sm text-muted-foreground">{myFb.rating}★ — "{myFb.comment ?? "(no comment)"}"</p>
+          <div className="flex items-start justify-between gap-3 flex-wrap">
+            <div className="flex-1 min-w-[200px]">
+              <div className="mono text-[10px] uppercase tracking-widest text-success mb-2">✓ You submitted feedback</div>
+              <p className="text-sm text-muted-foreground">{myFb.rating}★ — "{myFb.comment ?? "(no comment)"}"</p>
+              {!canEdit(myFb) && <p className="text-[11px] mono text-muted-foreground mt-2">Edit window (24h) expired</p>}
+            </div>
+            {canEdit(myFb) && (
+              <div className="flex gap-2">
+                <Button size="sm" variant="outline" onClick={startEdit}>Edit</Button>
+                <Button size="sm" variant="ghost" onClick={deleteOwn} className="text-destructive">Delete</Button>
+              </div>
+            )}
+          </div>
         </Card>
       )}
 

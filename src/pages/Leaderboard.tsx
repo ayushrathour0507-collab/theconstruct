@@ -38,6 +38,18 @@ const Leaderboard = () => {
   const stats = useMemo(() => computeMonthlyEvaluation(fb), [fb]);
   const trainerName = (id: string) => trainers.find((t) => t.id === id)?.name ?? "—";
 
+  // Per-month winner history for the year
+  const winnerHistory = useMemo(() => {
+    return Array.from({ length: 12 }, (_, i) => i + 1).map((m) => {
+      const ms = sessions.filter((s) => s.year === year && s.month === m);
+      const mfb = feedback.filter((f) => ms.some((s) => s.id === f.session_id));
+      if (mfb.length === 0) return null;
+      const top = computeMonthlyEvaluation(mfb)[0];
+      if (!top) return null;
+      return { month: m, winner: top };
+    }).filter(Boolean) as { month: number; winner: ReturnType<typeof computeMonthlyEvaluation>[number] }[];
+  }, [sessions, feedback, year]);
+
   const exportCsv = () => {
     const rows = [["Rank","Trainer","Avg Rating","Total Feedbacks","Valid Feedbacks","High Quality %","Final Score"]];
     stats.forEach((s) => rows.push([
@@ -144,6 +156,32 @@ const Leaderboard = () => {
             </Card>
           )}
         </>
+      )}
+
+      {/* Hall of Champions — past month winners */}
+      {winnerHistory.length > 0 && (
+        <div className="space-y-4 pt-4">
+          <div>
+            <div className="mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground mb-2">Hall of Champions</div>
+            <h2 className="font-serif text-3xl">2026 monthly winners</h2>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {winnerHistory.map(({ month: m, winner: w }) => (
+              <Card key={m} className="card-elevate p-5 flex items-center gap-4">
+                <div className="w-12 h-12 rounded-xl bg-gradient-gold flex items-center justify-center shadow-glow shrink-0">
+                  <Trophy className="w-6 h-6 text-primary-foreground" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="mono text-[10px] uppercase tracking-widest text-primary mb-0.5">{monthLabel(m)} 2026</div>
+                  <div className="font-serif text-lg truncate">{trainerName(w.trainer_id)}</div>
+                  <div className="text-xs text-muted-foreground mono">
+                    {w.final_score.toFixed(2)} · {w.avg_rating.toFixed(2)}★ · {w.total_feedbacks} fb
+                  </div>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </div>
       )}
     </div>
   );
