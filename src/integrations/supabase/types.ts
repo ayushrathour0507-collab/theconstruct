@@ -129,6 +129,7 @@ export type Database = {
       }
       sessions: {
         Row: {
+          clickup_task_id: string | null
           created_at: string
           description: string | null
           id: string
@@ -140,6 +141,7 @@ export type Database = {
           year: number
         }
         Insert: {
+          clickup_task_id?: string | null
           created_at?: string
           description?: string | null
           id?: string
@@ -151,6 +153,7 @@ export type Database = {
           year: number
         }
         Update: {
+          clickup_task_id?: string | null
           created_at?: string
           description?: string | null
           id?: string
