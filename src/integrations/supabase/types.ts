@@ -14,6 +14,35 @@ export type Database = {
   }
   public: {
     Tables: {
+      attendances: {
+        Row: {
+          created_at: string
+          id: string
+          session_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          session_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          session_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "attendances_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       feedback: {
         Row: {
           anonymous: boolean
@@ -95,6 +124,30 @@ export type Database = {
         }
         Relationships: []
       }
+      series: {
+        Row: {
+          clickup_parent_task_id: string | null
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+        }
+        Insert: {
+          clickup_parent_task_id?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+        }
+        Update: {
+          clickup_parent_task_id?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
       session_summary: {
         Row: {
           key_points: string[] | null
@@ -134,6 +187,7 @@ export type Database = {
           description: string | null
           id: string
           month: number
+          series_id: string | null
           session_date: string
           status: string
           title: string
@@ -146,6 +200,7 @@ export type Database = {
           description?: string | null
           id?: string
           month: number
+          series_id?: string | null
           session_date: string
           status?: string
           title: string
@@ -158,6 +213,7 @@ export type Database = {
           description?: string | null
           id?: string
           month?: number
+          series_id?: string | null
           session_date?: string
           status?: string
           title?: string
@@ -165,6 +221,13 @@ export type Database = {
           year?: number
         }
         Relationships: [
+          {
+            foreignKeyName: "sessions_series_id_fkey"
+            columns: ["series_id"]
+            isOneToOne: false
+            referencedRelation: "series"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "sessions_trainer_id_fkey"
             columns: ["trainer_id"]

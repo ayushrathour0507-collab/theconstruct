@@ -6,37 +6,53 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { FloatingShapes } from "@/components/FloatingShapes";
 import { TiltCard } from "@/components/TiltCard";
+import { SeriesCard } from "@/components/SeriesCard";
+import { SessionDetailModal } from "@/components/SessionDetailModal";
 import { CalendarDays, Sparkles, ArrowRight, Star, Lock, MessageSquareQuote } from "lucide-react";
 import { monthLabel } from "@/lib/scoring";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 
-interface Session { id: string; title: string; session_date: string; status: string; trainer_id: string; month: number; year: number; }
+interface Session { id: string; title: string; description: string | null; session_date: string; status: string; trainer_id: string; month: number; year: number; series_id: string | null; }
 interface Trainer { id: string; name: string; }
+interface Series { id: string; name: string; description: string | null; }
 interface Feedback { id: string; rating: number; comment: string | null; anonymous: boolean; created_at: string; trainer_id: string; session_id: string; user_id: string; }
+
+const statusTone: Record<string, string> = {
+  "Completed": "bg-emerald-500/10 text-emerald-400 border-emerald-500/30",
+  "In Progress": "bg-blue-500/10 text-blue-400 border-blue-500/30",
+  "Assigned": "bg-purple-500/10 text-purple-400 border-purple-500/30",
+  "Not Started": "bg-orange-500/10 text-orange-400 border-orange-500/30",
+  "Scheduled": "bg-primary/10 text-primary border-primary/30",
+};
 
 const Landing = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [sessions, setSessions] = useState<Session[]>([]);
   const [trainers, setTrainers] = useState<Trainer[]>([]);
+  const [seriesList, setSeriesList] = useState<Series[]>([]);
   const [feedback, setFeedback] = useState<Feedback[]>([]);
+  const [openSession, setOpenSession] = useState<Session | null>(null);
 
   useEffect(() => {
     const load = async () => {
-      const [s, t, f] = await Promise.all([
+      const [s, t, sr, f] = await Promise.all([
         supabase.from("sessions").select("*").order("session_date", { ascending: true }),
         supabase.from("trainers").select("id,name"),
+        supabase.from("series").select("id,name,description"),
         supabase.from("feedback").select("*").not("comment", "is", null).order("created_at", { ascending: false }).limit(8),
       ]);
-      setSessions(s.data ?? []);
+      setSessions((s.data ?? []) as Session[]);
       setTrainers(t.data ?? []);
+      setSeriesList(sr.data ?? []);
       setFeedback(f.data ?? []);
     };
     load();
     const ch = supabase.channel("landing-live")
       .on("postgres_changes", { event: "*", schema: "public", table: "sessions" }, load)
       .on("postgres_changes", { event: "*", schema: "public", table: "feedback" }, load)
+      .on("postgres_changes", { event: "*", schema: "public", table: "series" }, load)
       .subscribe();
     return () => { supabase.removeChannel(ch); };
   }, []);
@@ -52,6 +68,37 @@ const Landing = () => {
     navigate("/auth");
     return true;
   };
+
+  const renderSessionCard = (s: Session, i: number) => (
+    <TiltCard key={s.id}>
+      <Card
+        onClick={() => setOpenSession(s)}
+        className="card-elevate p-6 h-full relative overflow-hidden cursor-pointer group"
+        style={{ animationDelay: `${i * 60}ms` }}
+      >
+        <div className="absolute top-0 right-0 w-24 h-24 bg-primary/10 blur-2xl rounded-full group-hover:bg-primary/20 transition" />
+        <div className="flex items-center gap-2 mb-3">
+          <Badge variant="outline" className="bg-primary/10 text-primary border-primary/30">
+            {monthLabel(s.month)} {new Date(s.session_date).getDate()}
+          </Badge>
+          <Badge variant="outline" className={statusTone[s.status] ?? statusTone["Scheduled"]}>
+            {s.status}
+          </Badge>
+        </div>
+        <h3 className="font-serif text-2xl leading-tight mb-2">{s.title}</h3>
+        <p className="text-sm text-muted-foreground mb-5">by <span className="text-foreground">{trainerName(s.trainer_id)}</span></p>
+        <div className="flex items-center justify-between">
+          <span className="mono text-[10px] uppercase tracking-widest text-muted-foreground flex items-center gap-1.5">
+            <CalendarDays className="w-3 h-3" />
+            {new Date(s.session_date).toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" })}
+          </span>
+          <span className="mono text-[10px] uppercase tracking-widest text-primary opacity-0 group-hover:opacity-100 transition">
+            View →
+          </span>
+        </div>
+      </Card>
+    </TiltCard>
+  );
 
   return (
     <div className="min-h-screen relative grain">
@@ -83,7 +130,7 @@ const Landing = () => {
       </header>
 
       {/* Hero */}
-      <section className="container pt-12 pb-20 text-center">
+      <section className="container pt-12 pb-16 text-center">
         <div className="mono text-[11px] uppercase tracking-[0.35em] text-muted-foreground mb-5 animate-rise">
           Saturday TechTalks · 2026
         </div>
@@ -94,15 +141,23 @@ const Landing = () => {
           Browse upcoming sessions, read what attendees thought, and join the community.
           Sign in to RSVP or share your own feedback.
         </p>
-        <div className="flex flex-wrap justify-center gap-3 mt-8 animate-rise">
-          <Button size="lg" onClick={() => navigate(user ? "/sessions" : "/auth")} className="bg-gradient-gold text-primary-foreground hover:opacity-90 shadow-glow">
-            {user ? "Browse sessions" : "Join the community"} <ArrowRight className="w-4 h-4 ml-1" />
-          </Button>
-          <Button size="lg" variant="outline" asChild>
-            <a href="#sessions">See what's on</a>
-          </Button>
-        </div>
       </section>
+
+      {/* Series cards */}
+      {seriesList.length > 0 && (
+        <section className="container py-8">
+          <div className="grid gap-6">
+            {seriesList.map(sr => (
+              <SeriesCard
+                key={sr.id}
+                series={sr}
+                sessions={sessions.filter(s => s.series_id === sr.id)}
+                trainers={trainers}
+              />
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Upcoming */}
       <section id="sessions" className="container py-14">
@@ -117,27 +172,7 @@ const Landing = () => {
           <p className="text-muted-foreground">No upcoming sessions yet — check back soon.</p>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {upcoming.map((s, i) => (
-              <TiltCard key={s.id}>
-                <Card className="card-elevate p-6 h-full relative overflow-hidden" style={{ animationDelay: `${i * 60}ms` }}>
-                  <div className="absolute top-0 right-0 w-24 h-24 bg-primary/10 blur-2xl rounded-full" />
-                  <Badge variant="outline" className="bg-primary/10 text-primary border-primary/30 mb-3">
-                    {monthLabel(s.month)} {new Date(s.session_date).getDate()}
-                  </Badge>
-                  <h3 className="font-serif text-2xl leading-tight mb-2">{s.title}</h3>
-                  <p className="text-sm text-muted-foreground mb-5">by <span className="text-foreground">{trainerName(s.trainer_id)}</span></p>
-                  <div className="flex items-center justify-between">
-                    <span className="mono text-[10px] uppercase tracking-widest text-muted-foreground flex items-center gap-1.5">
-                      <CalendarDays className="w-3 h-3" />
-                      {new Date(s.session_date).toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" })}
-                    </span>
-                    <Button size="sm" variant="ghost" onClick={() => { if (!requireLogin("attend this session")) navigate(`/sessions/${s.id}`); }}>
-                      {user ? "Attend" : <><Lock className="w-3 h-3 mr-1" /> Sign in to attend</>}
-                    </Button>
-                  </div>
-                </Card>
-              </TiltCard>
-            ))}
+            {upcoming.map(renderSessionCard)}
           </div>
         )}
       </section>
@@ -187,16 +222,8 @@ const Landing = () => {
             <div className="mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground mb-2">Recap</div>
             <h2 className="font-serif text-4xl">Previous sessions</h2>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {previous.map((s) => (
-              <Card key={s.id} className="card-elevate p-5">
-                <div className="mono text-[10px] uppercase tracking-widest text-muted-foreground mb-2">
-                  {new Date(s.session_date).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}
-                </div>
-                <h3 className="font-serif text-xl leading-tight mb-1">{s.title}</h3>
-                <p className="text-sm text-muted-foreground">by {trainerName(s.trainer_id)}</p>
-              </Card>
-            ))}
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {previous.map(renderSessionCard)}
           </div>
         </section>
       )}
@@ -204,6 +231,13 @@ const Landing = () => {
       <footer className="border-t border-border/60 py-8 mt-12 text-center text-xs text-muted-foreground mono">
         TRAINER TECHTALK EVAL · 2026
       </footer>
+
+      <SessionDetailModal
+        session={openSession}
+        trainerName={openSession ? trainerName(openSession.trainer_id) : ""}
+        open={!!openSession}
+        onOpenChange={(o) => !o && setOpenSession(null)}
+      />
     </div>
   );
 };
