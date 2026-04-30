@@ -64,6 +64,39 @@ Deno.serve(async (req) => {
     const status = (task.status?.status ?? "Scheduled") as string;
     const niceStatus = ["Completed", "In Progress", "Assigned", "Not Started"].includes(status) ? status : "Scheduled";
 
+    // Series mapping: ClickUp parent task → series row
+    let series_id: string | null = null;
+    const parentTaskId: string | null = task.parent ?? null;
+    if (parentTaskId) {
+      // Look up series by parent task id; create on the fly if missing
+      const { data: existing } = await supabase
+        .from("series")
+        .select("id")
+        .eq("clickup_parent_task_id", parentTaskId)
+        .maybeSingle();
+      if (existing) {
+        series_id = existing.id;
+      } else {
+        // Fetch parent task to get its name/description
+        const pr = await fetch(`https://api.clickup.com/api/v2/task/${parentTaskId}`, {
+          headers: { Authorization: token },
+        });
+        if (pr.ok) {
+          const parent = await pr.json();
+          const { data: created } = await supabase
+            .from("series")
+            .insert({
+              name: parent.name ?? "Untitled series",
+              description: parent.description ?? parent.text_content ?? null,
+              clickup_parent_task_id: parentTaskId,
+            })
+            .select("id")
+            .maybeSingle();
+          series_id = created?.id ?? null;
+        }
+      }
+    }
+
     const { error } = await supabase.from("sessions").upsert(
       {
         clickup_task_id: taskId,
@@ -72,6 +105,7 @@ Deno.serve(async (req) => {
         session_date,
         trainer_id,
         status: niceStatus,
+        series_id,
         month: new Date(session_date).getMonth() + 1,
         year: new Date(session_date).getFullYear(),
       },
