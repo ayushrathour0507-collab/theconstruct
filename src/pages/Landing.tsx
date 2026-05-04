@@ -105,39 +105,39 @@ const Landing = () => {
       <FloatingShapes />
 
       {/* Header */}
-      <header className="container flex items-center justify-between py-5">
-        <Link to="/" className="flex items-center gap-2.5">
-          <div className="w-10 h-10 rounded-xl bg-gradient-gold flex items-center justify-center shadow-glow">
-            <Sparkles className="w-5 h-5 text-primary-foreground" strokeWidth={2.5} />
+      <header className="container flex items-center justify-between py-4 sm:py-5 gap-2">
+        <Link to="/" className="flex items-center gap-2 sm:gap-2.5 min-w-0">
+          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-gold flex items-center justify-center shadow-glow shrink-0">
+            <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-primary-foreground" strokeWidth={2.5} />
           </div>
-          <div className="leading-tight">
-            <div className="font-serif text-lg">TechTalk</div>
-            <div className="mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground">Eval · 2026</div>
+          <div className="leading-tight min-w-0">
+            <div className="font-serif text-base sm:text-lg truncate">TechTalk</div>
+            <div className="mono text-[9px] sm:text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.25em] text-muted-foreground truncate">Eval · 2026</div>
           </div>
         </Link>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
           {user ? (
-            <Button onClick={() => navigate("/dashboard")} className="bg-gradient-gold text-primary-foreground hover:opacity-90">
+            <Button size="sm" onClick={() => navigate("/dashboard")} className="bg-gradient-gold text-primary-foreground hover:opacity-90">
               Dashboard <ArrowRight className="w-4 h-4 ml-1" />
             </Button>
           ) : (
             <>
-              <Button variant="ghost" onClick={() => navigate("/auth")}>Sign in</Button>
-              <Button onClick={() => navigate("/auth")} className="bg-gradient-gold text-primary-foreground hover:opacity-90">Get started</Button>
+              <Button size="sm" variant="ghost" onClick={() => navigate("/auth")}>Sign in</Button>
+              <Button size="sm" onClick={() => navigate("/auth")} className="bg-gradient-gold text-primary-foreground hover:opacity-90">Get started</Button>
             </>
           )}
         </div>
       </header>
 
       {/* Hero */}
-      <section className="container pt-12 pb-16 text-center">
-        <div className="mono text-[11px] uppercase tracking-[0.35em] text-muted-foreground mb-5 animate-rise">
+      <section className="container pt-8 sm:pt-12 pb-12 sm:pb-16 text-center">
+        <div className="mono text-[10px] sm:text-[11px] uppercase tracking-[0.3em] sm:tracking-[0.35em] text-muted-foreground mb-4 sm:mb-5 animate-rise">
           Saturday TechTalks · 2026
         </div>
-        <h1 className="font-serif text-5xl md:text-7xl leading-[1.02] max-w-4xl mx-auto animate-rise">
+        <h1 className="font-serif text-3xl sm:text-5xl md:text-6xl lg:text-7xl leading-[1.05] max-w-4xl mx-auto animate-rise">
           Where great <span className="gold-text italic">trainers</span> get the credit they deserve.
         </h1>
-        <p className="text-muted-foreground mt-6 max-w-xl mx-auto leading-relaxed animate-rise">
+        <p className="text-sm sm:text-base text-muted-foreground mt-5 sm:mt-6 max-w-xl mx-auto leading-relaxed animate-rise px-2">
           Browse upcoming sessions, read what attendees thought, and join the community.
           Sign in to RSVP or share your own feedback.
         </p>
@@ -160,33 +160,33 @@ const Landing = () => {
       )}
 
       {/* Upcoming */}
-      <section id="sessions" className="container py-14">
-        <div className="flex items-end justify-between mb-6">
+      <section id="sessions" className="container py-10 sm:py-14">
+        <div className="flex items-end justify-between mb-5 sm:mb-6 gap-3 flex-wrap">
           <div>
             <div className="mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground mb-2">What's next</div>
-            <h2 className="font-serif text-4xl">Upcoming sessions</h2>
+            <h2 className="font-serif text-3xl sm:text-4xl">Upcoming sessions</h2>
           </div>
           <span className="mono text-[10px] uppercase tracking-widest text-muted-foreground">{upcoming.length} scheduled</span>
         </div>
         {upcoming.length === 0 ? (
           <p className="text-muted-foreground">No upcoming sessions yet — check back soon.</p>
         ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
             {upcoming.map(renderSessionCard)}
           </div>
         )}
       </section>
 
       {/* Recent feedback */}
-      <section className="container py-14">
-        <div className="mb-6">
+      <section className="container py-10 sm:py-14">
+        <div className="mb-5 sm:mb-6">
           <div className="mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground mb-2">Voices from the room</div>
-          <h2 className="font-serif text-4xl">What attendees are saying</h2>
+          <h2 className="font-serif text-3xl sm:text-4xl">What attendees are saying</h2>
         </div>
         {feedback.length === 0 ? (
           <p className="text-muted-foreground">No feedback yet.</p>
         ) : (
-          <div className="grid md:grid-cols-2 gap-4">
+          <div className="grid sm:grid-cols-2 gap-4">
             {feedback.map((f) => (
               <TiltCard key={f.id}>
                 <Card className="card-elevate p-6 h-full">
@@ -217,12 +217,12 @@ const Landing = () => {
 
       {/* Previous */}
       {previous.length > 0 && (
-        <section className="container py-14">
-          <div className="mb-6">
+        <section className="container py-10 sm:py-14">
+          <div className="mb-5 sm:mb-6">
             <div className="mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground mb-2">Recap</div>
-            <h2 className="font-serif text-4xl">Previous sessions</h2>
+            <h2 className="font-serif text-3xl sm:text-4xl">Previous sessions</h2>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
             {previous.map(renderSessionCard)}
           </div>
         </section>
