@@ -39,7 +39,7 @@ const MyFeedback = () => {
     <div className="space-y-6 animate-rise">
       <div>
         <div className="mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground mb-2">Your contributions</div>
-        <h1 className="font-serif text-4xl md:text-5xl">My feedback</h1>
+        <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl">My feedback</h1>
         <p className="text-muted-foreground text-sm mt-2">You can edit or delete your feedback within 24 hours of submission.</p>
       </div>
       {rows.length === 0 ? (

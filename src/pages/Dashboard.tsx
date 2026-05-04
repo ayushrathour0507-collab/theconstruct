@@ -57,7 +57,7 @@ const Dashboard = () => {
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <div className="mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground mb-2">Overview · {year}</div>
-          <h1 className="font-serif text-4xl md:text-5xl">Dashboard</h1>
+          <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl">Dashboard</h1>
         </div>
         <div className="flex gap-2">
           <select value={month} onChange={(e) => setMonth(parseInt(e.target.value))}
@@ -88,7 +88,7 @@ const Dashboard = () => {
             <div className="mono text-[10px] uppercase tracking-[0.3em] text-primary mb-2">Monthly Winner · {monthLabel(month)} 2026</div>
             {winner ? (
               <>
-                <h2 className="font-serif text-4xl mb-1">{trainerName(winner.trainer_id)}</h2>
+                <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl mb-1 break-words">{trainerName(winner.trainer_id)}</h2>
                 <p className="text-muted-foreground text-sm">
                   Final score <span className="text-foreground font-semibold">{winner.final_score.toFixed(2)}</span> ·
                   Avg <span className="text-foreground">{winner.avg_rating.toFixed(2)}★</span> ·
