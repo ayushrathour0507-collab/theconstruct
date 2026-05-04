@@ -281,9 +281,81 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      feedback_public: {
+        Row: {
+          anonymous: boolean | null
+          comment: string | null
+          created_at: string | null
+          id: string | null
+          quality_category: string | null
+          rating: number | null
+          sentiment: string | null
+          session_id: string | null
+          trainer_id: string | null
+        }
+        Insert: {
+          anonymous?: boolean | null
+          comment?: string | null
+          created_at?: string | null
+          id?: string | null
+          quality_category?: string | null
+          rating?: number | null
+          sentiment?: string | null
+          session_id?: string | null
+          trainer_id?: string | null
+        }
+        Update: {
+          anonymous?: boolean | null
+          comment?: string | null
+          created_at?: string | null
+          id?: string | null
+          quality_category?: string | null
+          rating?: number | null
+          sentiment?: string | null
+          session_id?: string | null
+          trainer_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "feedback_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "feedback_trainer_id_fkey"
+            columns: ["trainer_id"]
+            isOneToOne: false
+            referencedRelation: "trainers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles_public: {
+        Row: {
+          id: string | null
+          name: string | null
+        }
+        Insert: {
+          id?: string | null
+          name?: string | null
+        }
+        Update: {
+          id?: string | null
+          name?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
+      get_profile_names: {
+        Args: { _ids: string[] }
+        Returns: {
+          id: string
+          name: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
