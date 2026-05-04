@@ -61,7 +61,7 @@ export const AppLayout = ({ children }: { children: React.ReactNode }) => {
           </div>
         </div>
       </header>
-      <main className="flex-1 container py-8">{children}</main>
+      <main className="flex-1 container py-5 sm:py-8">{children}</main>
       <footer className="border-t border-border/60 py-6 text-center text-xs text-muted-foreground mono">
         TRAINER TECHTALK EVAL · {user?.email ? user.email : "guest"} · 2026
       </footer>

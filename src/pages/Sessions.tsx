@@ -62,7 +62,7 @@ const Sessions = () => {
     <div className="space-y-8 animate-rise">
       <div>
         <div className="mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground mb-2">Saturday TechTalks</div>
-        <h1 className="font-serif text-4xl md:text-5xl mb-6">Sessions</h1>
+        <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl mb-6">Sessions</h1>
         <div className="flex flex-wrap gap-3">
           <div className="relative flex-1 min-w-[240px]">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -82,7 +82,7 @@ const Sessions = () => {
             {k}
             <span className="mono text-[10px] uppercase tracking-widest text-muted-foreground">{list.length} session{list.length !== 1 ? "s" : ""}</span>
           </h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {list.map((s) => (
               <Link key={s.id} to={`/sessions/${s.id}`}>
                 <Card className="card-elevate p-5 h-full group">

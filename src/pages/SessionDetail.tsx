@@ -170,7 +170,7 @@ const SessionDetail = () => {
 
       <div>
         <Badge variant="outline" className="mb-3">{session.status}</Badge>
-        <h1 className="font-serif text-4xl md:text-5xl leading-tight mb-3">{session.title}</h1>
+        <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl leading-tight mb-3 break-words">{session.title}</h1>
         <p className="text-muted-foreground">
           by <span className="text-foreground font-medium">{trainer?.name}</span> ·
           {" "}{new Date(session.session_date).toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric", year: "numeric" })}
@@ -178,7 +178,7 @@ const SessionDetail = () => {
         {session.description && <p className="mt-4 text-muted-foreground max-w-3xl leading-relaxed">{session.description}</p>}
       </div>
 
-      <div className="grid md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-3 gap-3 sm:gap-4">
         <Stat label="Avg rating" value={avg ? avg.toFixed(2) : "—"} suffix="/5" />
         <Stat label="Feedback" value={feedback.length.toString()} />
         <Stat label="High quality" value={`${feedback.filter(f => f.quality_category === "high").length}`} />

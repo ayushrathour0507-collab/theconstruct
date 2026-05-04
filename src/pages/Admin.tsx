@@ -80,11 +80,11 @@ const Admin = () => {
     <div className="space-y-6 animate-rise">
       <div>
         <div className="mono text-[10px] uppercase tracking-[0.3em] text-primary mb-2">Admin Panel</div>
-        <h1 className="font-serif text-4xl md:text-5xl">Manage</h1>
+        <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl">Manage</h1>
       </div>
 
       <Tabs defaultValue="trainers">
-        <TabsList>
+        <TabsList className="w-full overflow-x-auto justify-start">
           <TabsTrigger value="trainers">Trainers</TabsTrigger>
           <TabsTrigger value="sessions">Sessions</TabsTrigger>
           <TabsTrigger value="feedback">Feedback</TabsTrigger>

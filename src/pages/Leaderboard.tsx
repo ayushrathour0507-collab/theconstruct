@@ -73,7 +73,7 @@ const Leaderboard = () => {
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <div className="mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground mb-2">Monthly Rankings</div>
-          <h1 className="font-serif text-4xl md:text-5xl">Leaderboard</h1>
+          <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl">Leaderboard</h1>
           <p className="text-muted-foreground text-sm mt-2">Final score = 0.7 × avg rating (high+medium quality) + 0.3 × normalized feedback count</p>
         </div>
         <div className="flex gap-2">
@@ -96,7 +96,7 @@ const Leaderboard = () => {
       ) : (
         <>
           {/* Podium */}
-          <div className="grid md:grid-cols-3 gap-4">
+          <div className="grid sm:grid-cols-3 gap-4">
             {[1,0,2].map((podiumIdx, i) => {
               const s = top3[podiumIdx]; if (!s) return <div key={i} />;
               const heights = ["", "md:scale-105", ""];
