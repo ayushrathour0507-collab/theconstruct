@@ -16,7 +16,7 @@ import { toast } from "sonner";
 interface Session { id: string; title: string; description: string | null; session_date: string; status: string; trainer_id: string; month: number; year: number; series_id: string | null; }
 interface Trainer { id: string; name: string; }
 interface Series { id: string; name: string; description: string | null; }
-interface Feedback { id: string; rating: number; comment: string | null; anonymous: boolean; created_at: string; trainer_id: string; session_id: string; user_id: string; }
+interface Feedback { id: string; rating: number; comment: string | null; anonymous: boolean; created_at: string; trainer_id: string; session_id: string; }
 
 const statusTone: Record<string, string> = {
   "Completed": "bg-emerald-500/10 text-emerald-400 border-emerald-500/30",
@@ -41,7 +41,7 @@ const Landing = () => {
         supabase.from("sessions").select("*").order("session_date", { ascending: true }),
         supabase.from("trainers").select("id,name"),
         supabase.from("series").select("id,name,description"),
-        supabase.from("feedback").select("*").not("comment", "is", null).order("created_at", { ascending: false }).limit(8),
+        supabase.from("feedback").select("id,session_id,trainer_id,rating,comment,sentiment,quality_category,anonymous,created_at").not("comment", "is", null).order("created_at", { ascending: false }).limit(8),
       ]);
       setSessions((s.data ?? []) as Session[]);
       setTrainers(t.data ?? []);
