@@ -132,7 +132,7 @@ const Landing = () => {
       {/* Hero */}
       <section className="container pt-8 sm:pt-12 pb-12 sm:pb-16 text-center">
         <div className="mono text-[10px] sm:text-[11px] uppercase tracking-[0.3em] sm:tracking-[0.35em] text-muted-foreground mb-4 sm:mb-5 animate-rise">
-          Saturday TechTalks · 2026
+          BytesAndBeyond · Loading knowledge into the system
         </div>
         <h1 className="font-serif text-3xl sm:text-5xl md:text-6xl lg:text-7xl leading-[1.05] max-w-4xl mx-auto animate-rise">
           Where great <span className="gold-text italic">trainers</span> get the credit they deserve.
