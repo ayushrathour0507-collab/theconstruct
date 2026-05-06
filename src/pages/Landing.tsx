@@ -229,7 +229,7 @@ const Landing = () => {
       )}
 
       <footer className="border-t border-border/60 py-8 mt-12 text-center text-xs text-muted-foreground mono">
-        TRAINER TECHTALK EVAL · 2026
+        BYTESANDBEYOND · LOADING KNOWLEDGE INTO THE SYSTEM · 2026
       </footer>
 
       <SessionDetailModal
