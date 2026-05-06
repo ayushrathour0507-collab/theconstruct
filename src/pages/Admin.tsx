@@ -210,6 +210,120 @@ const Admin = () => {
             {fbFiltered.length === 0 && <p className="text-muted-foreground text-sm text-center py-8">No feedback matches.</p>}
           </div>
         </TabsContent>
+
+        <TabsContent value="announce" className="space-y-4">
+          {(() => {
+            const sess = sessions.find((s) => s.id === pickSession);
+            const trainerName = trainers.find((t) => t.id === sess?.trainer_id)?.name || "TBD";
+            const dateStr = sess ? new Date(sess.session_date).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) : "";
+            const dayStr = sess ? new Date(sess.session_date).toLocaleDateString("en-US", { weekday: "long" }) : "";
+            const text = sess ? generateAnnouncement(annType, {
+              presenter: trainerName, topic: sess.title, date: dateStr, day: dayStr,
+              startTime, endTime, meetingLink, summary, rescheduleDate,
+            }) : "Select a session to generate an announcement.";
+            return (
+              <>
+                <Card className="card-elevate p-5 space-y-3">
+                  <h3 className="font-serif text-xl">Announcement generator</h3>
+                  <div className="grid md:grid-cols-2 gap-3">
+                    <div>
+                      <Label>Session</Label>
+                      <select value={pickSession} onChange={(e) => setPickSession(e.target.value)}
+                              className="w-full bg-input border border-border rounded-lg px-3 py-2 text-sm">
+                        <option value="">Select session</option>
+                        {sessions.map((s) => (
+                          <option key={s.id} value={s.id}>{new Date(s.session_date).toLocaleDateString()} · {s.title}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <Label>Type</Label>
+                      <select value={annType} onChange={(e) => setAnnType(e.target.value as AnnouncementType)}
+                              className="w-full bg-input border border-border rounded-lg px-3 py-2 text-sm">
+                        {(["pre-session","reminder","wrap-up","postponement","reschedule"] as AnnouncementType[]).map(t => <option key={t} value={t}>{t}</option>)}
+                      </select>
+                    </div>
+                    <div><Label>Start time</Label><Input value={startTime} onChange={(e) => setStartTime(e.target.value)} /></div>
+                    <div><Label>End time</Label><Input value={endTime} onChange={(e) => setEndTime(e.target.value)} /></div>
+                    <div className="md:col-span-2"><Label>Meeting link</Label><Input value={meetingLink} onChange={(e) => setMeetingLink(e.target.value)} placeholder="https://teams.microsoft.com/..." /></div>
+                    {annType === "wrap-up" && (
+                      <div className="md:col-span-2"><Label>Recap / highlights</Label><Textarea rows={3} value={summary} onChange={(e) => setSummary(e.target.value)} /></div>
+                    )}
+                    {(annType === "postponement" || annType === "reschedule") && (
+                      <div className="md:col-span-2"><Label>New date</Label><Input value={rescheduleDate} onChange={(e) => setRescheduleDate(e.target.value)} placeholder="e.g. Sunday 11 May 2026" /></div>
+                    )}
+                  </div>
+                </Card>
+                <Card className="card-elevate p-5">
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="font-serif text-xl">Preview</h3>
+                    <Button size="sm" variant="outline" disabled={!sess}
+                            onClick={() => { navigator.clipboard.writeText(text); toast.success("Copied to clipboard"); }}>
+                      <Copy className="w-4 h-4 mr-1" /> Copy
+                    </Button>
+                  </div>
+                  <pre className="whitespace-pre-wrap font-sans text-sm bg-secondary/40 border border-border/50 rounded-lg p-4">{text}</pre>
+                </Card>
+              </>
+            );
+          })()}
+        </TabsContent>
+
+        <TabsContent value="poster" className="space-y-4">
+          {(() => {
+            const sess = sessions.find((s) => s.id === pickSession);
+            const trainerName = trainers.find((t) => t.id === sess?.trainer_id)?.name || "TBD";
+            const dateStr = sess ? new Date(sess.session_date).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) : "10 May 2026";
+            const dayStr = sess ? new Date(sess.session_date).toLocaleDateString("en-US", { weekday: "long" }) : "Saturday";
+            const data: PosterData = {
+              presenter: trainerName,
+              topic: sess?.title || "Session topic",
+              date: dateStr, day: dayStr, startTime, endTime, meetingLink,
+              topics: posterTopics.split("\n").map(s => s.trim()).filter(Boolean),
+              requirements: posterReqs.split("\n").map(s => s.trim()).filter(Boolean),
+            };
+            const download = async () => {
+              if (!posterRef.current) return;
+              try {
+                const url = await toPng(posterRef.current, { pixelRatio: 2, cacheBust: true });
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = `bytesandbeyond-${(sess?.title || "poster").replace(/\s+/g, "-").toLowerCase()}.png`;
+                a.click();
+              } catch (e: any) { toast.error(e?.message || "Failed to export"); }
+            };
+            return (
+              <>
+                <Card className="card-elevate p-5 space-y-3">
+                  <h3 className="font-serif text-xl">Poster generator</h3>
+                  <div className="grid md:grid-cols-2 gap-3">
+                    <div>
+                      <Label>Session</Label>
+                      <select value={pickSession} onChange={(e) => setPickSession(e.target.value)}
+                              className="w-full bg-input border border-border rounded-lg px-3 py-2 text-sm">
+                        <option value="">Select session</option>
+                        {sessions.map((s) => (
+                          <option key={s.id} value={s.id}>{new Date(s.session_date).toLocaleDateString()} · {s.title}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div><Label>Meeting link</Label><Input value={meetingLink} onChange={(e) => setMeetingLink(e.target.value)} /></div>
+                    <div><Label>Start time</Label><Input value={startTime} onChange={(e) => setStartTime(e.target.value)} /></div>
+                    <div><Label>End time</Label><Input value={endTime} onChange={(e) => setEndTime(e.target.value)} /></div>
+                    <div><Label>Topics (one per line)</Label><Textarea rows={4} value={posterTopics} onChange={(e) => setPosterTopics(e.target.value)} placeholder="Intro&#10;Live demo&#10;Q&A" /></div>
+                    <div><Label>Requirements (one per line)</Label><Textarea rows={4} value={posterReqs} onChange={(e) => setPosterReqs(e.target.value)} /></div>
+                  </div>
+                  <Button onClick={download} className="bg-gradient-gold text-primary-foreground"><Download className="w-4 h-4 mr-1" /> Download PNG</Button>
+                </Card>
+                <Card className="card-elevate p-5 overflow-auto">
+                  <div className="inline-block mx-auto" style={{ transformOrigin: "top left" }}>
+                    <PosterPreview ref={posterRef} data={data} />
+                  </div>
+                </Card>
+              </>
+            );
+          })()}
+        </TabsContent>
       </Tabs>
     </div>
   );
