@@ -103,6 +103,8 @@ const Admin = () => {
           <TabsTrigger value="trainers">Trainers</TabsTrigger>
           <TabsTrigger value="sessions">Sessions</TabsTrigger>
           <TabsTrigger value="feedback">Feedback</TabsTrigger>
+          <TabsTrigger value="announce">Announce</TabsTrigger>
+          <TabsTrigger value="poster">Poster</TabsTrigger>
         </TabsList>
 
         <TabsContent value="trainers" className="space-y-4">
