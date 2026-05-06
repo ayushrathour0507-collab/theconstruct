@@ -13,12 +13,7 @@ import { z } from "zod";
 
 const schema = z.object({
   email: z.string().trim().email("Invalid email").max(255),
-  password: z.string()
-    .min(8, "Password must be at least 8 characters")
-    .max(72)
-    .regex(/[A-Z]/, "Must contain an uppercase letter")
-    .regex(/[a-z]/, "Must contain a lowercase letter")
-    .regex(/[0-9]/, "Must contain a number"),
+  password: z.string().min(1, "Password is required").max(72),
   name: z.string().trim().min(2, "Min 2 chars").max(100).optional(),
 });
 
