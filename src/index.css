@@ -159,18 +159,43 @@
 
 @layer components {
   .glass {
-    background: hsl(var(--card) / 0.85);
-    backdrop-filter: blur(12px) saturate(140%);
-    border: 1px solid hsl(var(--border));
+    background: hsl(var(--card) / 0.55);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid hsl(var(--border) / 0.6);
+    box-shadow: 0 8px 32px hsl(var(--primary) / 0.08), inset 0 1px 0 hsl(0 0% 100% / 0.08);
+  }
+  .glass-strong {
+    background: hsl(var(--card) / 0.7);
+    backdrop-filter: blur(28px) saturate(200%);
+    -webkit-backdrop-filter: blur(28px) saturate(200%);
+    border: 1px solid hsl(var(--border) / 0.7);
+    box-shadow: 0 12px 40px hsl(var(--primary) / 0.12), inset 0 1px 0 hsl(0 0% 100% / 0.1);
+  }
+  .glass-subtle {
+    background: hsl(var(--card) / 0.4);
+    backdrop-filter: blur(14px) saturate(160%);
+    -webkit-backdrop-filter: blur(14px) saturate(160%);
+    border: 1px solid hsl(var(--border) / 0.5);
+  }
+  /* Apply glassmorphism globally to shadcn cards, popovers, dialogs, sheets */
+  [data-radix-popper-content-wrapper] > *,
+  .bg-card {
+    background: hsl(var(--card) / 0.6) !important;
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
   }
   .card-elevate {
-    background: var(--gradient-card);
-    box-shadow: var(--shadow-elevate);
+    background: hsl(var(--card) / 0.55);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid hsl(var(--border) / 0.6);
+    box-shadow: var(--shadow-elevate), 0 8px 32px hsl(var(--primary) / 0.08), inset 0 1px 0 hsl(0 0% 100% / 0.08);
     transition: transform 0.15s var(--transition-base), box-shadow 0.15s var(--transition-base);
   }
   .card-elevate:hover {
     transform: translateY(-2px);
-    box-shadow: var(--shadow-lg), 0 0 0 1px hsl(var(--primary) / 0.15);
+    box-shadow: var(--shadow-lg), 0 0 0 1px hsl(var(--primary) / 0.2), 0 12px 40px hsl(var(--primary) / 0.15);
   }
   .gold-text {
     background: var(--gradient-primary);
