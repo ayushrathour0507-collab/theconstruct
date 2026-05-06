@@ -60,8 +60,8 @@ const Auth = () => {
             <Sparkles className="w-5 h-5 text-primary-foreground" strokeWidth={2.5} />
           </div>
           <div>
-            <div className="font-serif text-xl">TechTalk</div>
-            <div className="mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground">Evaluation · 2026</div>
+            <div className="font-serif text-xl">BytesAndBeyond</div>
+            <div className="mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground">Loading knowledge · 2026</div>
           </div>
         </div>
         <div>
