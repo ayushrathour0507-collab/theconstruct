@@ -111,8 +111,8 @@ const Landing = () => {
             <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-primary-foreground" strokeWidth={2.5} />
           </div>
           <div className="leading-tight min-w-0">
-            <div className="font-serif text-base sm:text-lg truncate">TechTalk</div>
-            <div className="mono text-[9px] sm:text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.25em] text-muted-foreground truncate">Eval · 2026</div>
+            <div className="font-serif text-base sm:text-lg truncate">BytesAndBeyond</div>
+            <div className="mono text-[9px] sm:text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.25em] text-muted-foreground truncate">Loading knowledge · 2026</div>
           </div>
         </Link>
         <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
