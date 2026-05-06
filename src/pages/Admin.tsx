@@ -29,6 +29,18 @@ const Admin = () => {
   const [sStatus, setSStatus] = useState("Scheduled");
   const [qFilter, setQFilter] = useState<string>("all");
 
+  // Announcement / Poster shared session pick + extras
+  const [pickSession, setPickSession] = useState<string>("");
+  const [annType, setAnnType] = useState<AnnouncementType>("pre-session");
+  const [meetingLink, setMeetingLink] = useState("");
+  const [startTime, setStartTime] = useState("2:00 PM");
+  const [endTime, setEndTime] = useState("3:00 PM");
+  const [summary, setSummary] = useState("");
+  const [rescheduleDate, setRescheduleDate] = useState("");
+  const [posterTopics, setPosterTopics] = useState("");
+  const [posterReqs, setPosterReqs] = useState("Laptop\nStable internet\nCuriosity");
+  const posterRef = useRef<HTMLDivElement>(null);
+
   const load = async () => {
     const [t, s, f] = await Promise.all([
       supabase.from("trainers").select("*").order("name"),
