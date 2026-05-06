@@ -69,7 +69,7 @@ const Auth = () => {
             Where great <span className="gold-text italic">trainers</span><br/>get the credit they deserve.
           </h1>
           <p className="text-muted-foreground max-w-md leading-relaxed">
-            Weekly Saturday TechTalks, structured feedback, AI-powered quality scoring, and a transparent monthly leaderboard.
+            Weekly Saturday KT sessions, structured feedback, AI-powered quality scoring, and a transparent monthly leaderboard.
           </p>
           <div className="mt-10 grid grid-cols-3 gap-4 max-w-md">
             {[
