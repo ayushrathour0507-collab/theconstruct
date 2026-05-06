@@ -60,8 +60,8 @@ const Auth = () => {
             <Sparkles className="w-5 h-5 text-primary-foreground" strokeWidth={2.5} />
           </div>
           <div>
-            <div className="font-serif text-xl">TechTalk</div>
-            <div className="mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground">Evaluation · 2026</div>
+            <div className="font-serif text-xl">BytesAndBeyond</div>
+            <div className="mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground">Loading knowledge · 2026</div>
           </div>
         </div>
         <div>
@@ -69,7 +69,7 @@ const Auth = () => {
             Where great <span className="gold-text italic">trainers</span><br/>get the credit they deserve.
           </h1>
           <p className="text-muted-foreground max-w-md leading-relaxed">
-            Weekly Saturday TechTalks, structured feedback, AI-powered quality scoring, and a transparent monthly leaderboard.
+            Weekly Saturday KT sessions, structured feedback, AI-powered quality scoring, and a transparent monthly leaderboard.
           </p>
           <div className="mt-10 grid grid-cols-3 gap-4 max-w-md">
             {[

@@ -111,8 +111,8 @@ const Landing = () => {
             <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-primary-foreground" strokeWidth={2.5} />
           </div>
           <div className="leading-tight min-w-0">
-            <div className="font-serif text-base sm:text-lg truncate">TechTalk</div>
-            <div className="mono text-[9px] sm:text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.25em] text-muted-foreground truncate">Eval · 2026</div>
+            <div className="font-serif text-base sm:text-lg truncate">BytesAndBeyond</div>
+            <div className="mono text-[9px] sm:text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.25em] text-muted-foreground truncate">Loading knowledge · 2026</div>
           </div>
         </Link>
         <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
@@ -132,7 +132,7 @@ const Landing = () => {
       {/* Hero */}
       <section className="container pt-8 sm:pt-12 pb-12 sm:pb-16 text-center">
         <div className="mono text-[10px] sm:text-[11px] uppercase tracking-[0.3em] sm:tracking-[0.35em] text-muted-foreground mb-4 sm:mb-5 animate-rise">
-          Saturday TechTalks · 2026
+          BytesAndBeyond · Loading knowledge into the system
         </div>
         <h1 className="font-serif text-3xl sm:text-5xl md:text-6xl lg:text-7xl leading-[1.05] max-w-4xl mx-auto animate-rise">
           Where great <span className="gold-text italic">trainers</span> get the credit they deserve.
@@ -229,7 +229,7 @@ const Landing = () => {
       )}
 
       <footer className="border-t border-border/60 py-8 mt-12 text-center text-xs text-muted-foreground mono">
-        TRAINER TECHTALK EVAL · 2026
+        BYTESANDBEYOND · LOADING KNOWLEDGE INTO THE SYSTEM · 2026
       </footer>
 
       <SessionDetailModal

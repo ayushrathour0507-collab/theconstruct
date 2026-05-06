@@ -26,8 +26,8 @@ export const AppLayout = ({ children }: { children: React.ReactNode }) => {
               <Sparkles className="w-4 h-4 text-primary-foreground" strokeWidth={2.5} />
             </div>
             <div className="leading-tight">
-              <div className="font-serif text-lg">TechTalk</div>
-              <div className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Eval · 2026</div>
+              <div className="font-serif text-lg">BytesAndBeyond</div>
+              <div className="mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Loading knowledge · 2026</div>
             </div>
           </Link>
           <nav className="hidden md:flex items-center gap-1">
@@ -63,7 +63,7 @@ export const AppLayout = ({ children }: { children: React.ReactNode }) => {
       </header>
       <main className="flex-1 container py-5 sm:py-8">{children}</main>
       <footer className="border-t border-border/60 py-6 text-center text-xs text-muted-foreground mono">
-        TRAINER TECHTALK EVAL · {user?.email ? user.email : "guest"} · 2026
+        BYTESANDBEYOND · {user?.email ? user.email : "guest"} · 2026
       </footer>
     </div>
   );
