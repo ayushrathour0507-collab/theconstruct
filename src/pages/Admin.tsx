@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -6,9 +6,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Trash2, Power, MessageSquare } from "lucide-react";
+import { Plus, Trash2, Power, MessageSquare, Copy, Download } from "lucide-react";
 import { toast } from "sonner";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { generateAnnouncement, AnnouncementType } from "@/lib/announcementTemplates";
+import { PosterPreview, PosterData } from "@/components/PosterPreview";
+import { toPng } from "html-to-image";
 
 interface Trainer { id: string; name: string; active: boolean; }
 interface Session { id: string; title: string; session_date: string; trainer_id: string; description: string | null; status: string; }
